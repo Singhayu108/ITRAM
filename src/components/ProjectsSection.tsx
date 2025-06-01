@@ -6,18 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { FaGithub, FaExternalLinkAlt, FaCloud, FaShieldAlt, FaDatabase } from 'react-icons/fa'
 import ProjectModal from './ProjectModal'
-
-interface Project {
-  title: string
-  description: string
-  image: string
-  icon: JSX.Element
-  technologies: string[]
-  links: {
-    github: string
-    live: string
-  }
-}
+import { Project } from '@/types/project'
 
 const featuredProjects: Project[] = [
   {

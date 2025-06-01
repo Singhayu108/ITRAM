@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 
 const textVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -79,14 +80,14 @@ export default function Hero() {
           custom={headingText.length + 2}
           className="space-x-4"
         >
-          <a 
-            href="#contact" 
+          <Link 
+            href="/contact" 
             className="inline-block px-8 py-3 bg-white text-brand-orange-dark font-semibold rounded-full 
             hover:bg-brand-orange-light hover:text-white transform hover:scale-105 transition-all duration-300 
             hover:shadow-lg hover:shadow-white/20"
           >
             Get Started
-          </a>
+          </Link>
           <a 
             href="#services" 
             className="inline-block px-8 py-3 border-2 border-white text-white font-semibold rounded-full 

@@ -1,18 +1,10 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import { FaGithub, FaExternalLinkAlt, FaTimes } from 'react-icons/fa'
+import { Project } from '@/types/project'
 
 interface ProjectModalProps {
-  project: {
-    title: string
-    description: string
-    image: string
-    technologies: string[]
-    links: {
-      github: string
-      live: string
-    }
-  } | null
+  project: Project | null
   isOpen: boolean
   onClose: () => void
 }
