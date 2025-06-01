@@ -24,10 +24,65 @@ body {
   }
   
   .btn-primary {
-    @apply bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors;
+    @apply bg-brand-orange text-white px-8 py-3 rounded-full font-semibold 
+    hover:bg-brand-orange-light transform hover:scale-105 transition-all duration-300 
+    hover:shadow-lg hover:shadow-brand-orange/20;
+  }
+  
+  .btn-secondary {
+    @apply border-2 border-brand-orange text-brand-orange px-8 py-3 rounded-full font-semibold 
+    hover:bg-brand-orange hover:text-white transform hover:scale-105 transition-all duration-300 
+    hover:shadow-lg hover:shadow-brand-orange/20;
   }
   
   .section-padding {
     @apply py-16 md:py-24;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-orange to-brand-orange-light;
+  }
+
+  .animate-scroll {
+    animation: scroll 20s linear infinite;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out forwards;
+  }
+}
+
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 } 

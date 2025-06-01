@@ -1,17 +1,15 @@
 import Hero from '@/components/Hero'
 import Services from '@/components/Services'
-import About from '@/components/About'
-import Portfolio from '@/components/Portfolio'
-import Contact from '@/components/Contact'
+import TeamSection from '@/components/TeamSection'
+import ProjectsSection from '@/components/ProjectsSection'
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
+    <main>
       <Hero />
       <Services />
-      <About />
-      <Portfolio />
-      <Contact />
+      <ProjectsSection />
+      <TeamSection />
     </main>
   )
 } 

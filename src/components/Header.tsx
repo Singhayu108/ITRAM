@@ -1,168 +1,107 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useTheme } from '@/app/providers'
-import { MoonIcon, SunIcon } from '@heroicons/react/24/outline'
-import { motion, AnimatePresence } from 'framer-motion'
-
-const navigation = [
-  { name: 'Home', href: '/' },
-  { name: 'About', href: '/about' },
-  { name: 'Services', href: '/services' },
-  { name: 'Projects', href: '/projects' },
-  { name: 'Contact', href: '/contact' },
-]
+import { useTheme } from 'next-themes'
+import { FiMenu, FiX } from 'react-icons/fi'
+import { FaSun, FaMoon } from 'react-icons/fa'
 
 export default function Header() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const { theme, toggleTheme } = useTheme()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { theme, setTheme } = useTheme()
+  const [logoError, setLogoError] = useState(false)
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0)
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
+  }
 
-  // Close mobile menu when window is resized to desktop size
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setIsMobileMenuOpen(false)
-      }
-    }
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
+  const navigation = [
+    { name: 'Home', href: '/' },
+    { name: 'About', href: '/about' },
+    { name: 'Services', href: '/services' },
+    { name: 'Projects', href: '/projects' },
+    { name: 'Team', href: '/team' },
+    { name: 'Contact', href: '/contact' },
+  ]
 
   return (
-    <header
-      className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-gradient-to-r from-brand-purple-dark via-brand-purple to-brand-purple-light shadow-lg'
-          : 'bg-gradient-to-r from-brand-purple-dark via-brand-purple to-brand-purple-light'
-      }`}
-    >
-      <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+    <header className="fixed w-full top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800">
+      <nav className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
           {/* Logo */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex-shrink-0"
-          >
-            <Link href="/" className="flex items-center">
-              <div className="relative w-60 h-24 flex items-center justify-start">
-                <Image
-                  src="/images/RAM.png"
-                  alt="ITRAM Management"
-                  fill
-                  className="object-contain object-left"
-                  style={{ filter: 'brightness(0) invert(1)' }}
-                  priority
-                  sizes="(max-width: 768px) 180px, 240px"
-                />
-              </div>
-            </Link>
-          </motion.div>
+          <Link href="/" className="flex items-center">
+            <div className="relative w-24 h-24 flex items-center justify-center">
+              <Image
+                src="/images/RAM.png"
+                alt="ITRAM Logo"
+                width={96}
+                height={96}
+                className={`w-auto h-auto object-contain ${theme === 'dark' ? 'brightness-100' : 'brightness-90'}`}
+                priority
+                onError={() => setLogoError(true)}
+              />
+            </div>
+          </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
+          <div className="hidden md:flex items-center space-x-6">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className="px-4 py-2 rounded-md text-sm font-medium text-white hover:text-brand-gold-light hover:bg-brand-purple-light/50 transition-all duration-200"
+                className="text-gray-600 dark:text-gray-300 hover:text-brand-orange dark:hover:text-brand-orange transition-colors font-medium"
               >
                 {item.name}
               </Link>
             ))}
+            
+            {/* Theme Toggle */}
             <button
-              onClick={toggleTheme}
-              className="ml-4 p-2 rounded-full text-brand-gold hover:text-brand-gold-light hover:bg-brand-purple-light/50 transition-colors"
-              aria-label="Toggle dark mode"
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-brand-orange dark:hover:text-brand-orange transition-colors"
+              aria-label="Toggle theme"
             >
-              {theme === 'dark' ? (
-                <SunIcon className="h-5 w-5" />
-              ) : (
-                <MoonIcon className="h-5 w-5" />
-              )}
+              {theme === 'dark' ? <FaSun className="w-5 h-5" /> : <FaMoon className="w-5 h-5" />}
             </button>
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
+          {/* Mobile Menu Button */}
+          <div className="md:hidden flex items-center space-x-4">
             <button
-              type="button"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-md text-brand-gold hover:text-brand-gold-light hover:bg-brand-purple-light/50 transition-all duration-200"
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300"
+              aria-label="Toggle theme"
+            >
+              {theme === 'dark' ? <FaSun className="w-5 h-5" /> : <FaMoon className="w-5 h-5" />}
+            </button>
+            <button
+              onClick={toggleMenu}
+              className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
               aria-label="Toggle menu"
             >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d={isMobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
-                />
-              </svg>
+              {isMenuOpen ? <FiX className="w-6 h-6" /> : <FiMenu className="w-6 h-6" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile menu */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="md:hidden"
-            >
-              <div className="px-2 pt-2 pb-3 space-y-1 bg-gradient-to-r from-brand-purple-dark to-brand-purple rounded-lg shadow-lg">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-brand-gold-light hover:bg-brand-purple-light/50 transition-all duration-200"
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-                <button
-                  onClick={() => {
-                    toggleTheme()
-                    setIsMobileMenuOpen(false)
-                  }}
-                  className="w-full flex items-center px-3 py-2 rounded-md text-base font-medium text-brand-gold hover:text-brand-gold-light hover:bg-brand-purple-light/50 transition-all duration-200"
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="md:hidden mt-4 py-4 border-t border-gray-100 dark:border-gray-800">
+            <div className="flex flex-col space-y-4">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className="text-gray-600 dark:text-gray-300 hover:text-brand-orange dark:hover:text-brand-orange transition-colors font-medium"
+                  onClick={() => setIsMenuOpen(false)}
                 >
-                  {theme === 'dark' ? (
-                    <>
-                      <SunIcon className="h-5 w-5 mr-2" />
-                      Light Mode
-                    </>
-                  ) : (
-                    <>
-                      <MoonIcon className="h-5 w-5 mr-2" />
-                      Dark Mode
-                    </>
-                  )}
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </nav>
     </header>
   )
