@@ -66,11 +66,73 @@ const services = [
   }
 ]
 
+const backgroundVariants = {
+  animate: {
+    backgroundPosition: ['0% 0%', '100% 100%'],
+    transition: {
+      duration: 20,
+      ease: "linear",
+      repeat: Infinity,
+      repeatType: "reverse" as const
+    }
+  }
+}
+
+const floatingAnimation = {
+  initial: { y: 0 },
+  animate: {
+    y: [-10, 10],
+    transition: {
+      duration: 3,
+      ease: "easeInOut",
+      repeat: Infinity,
+      repeatType: "reverse" as const
+    }
+  }
+}
+
 export default function Services() {
   return (
-    <section className="py-20 bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4">
+    <section className="relative py-20 overflow-hidden">
+      {/* Animated Background */}
+      <motion.div
+        variants={backgroundVariants}
+        animate="animate"
+        className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 bg-[length:400%_400%]"
+      >
+        <div className="absolute inset-0 bg-[url('/images/noise.png')] opacity-[0.03] mix-blend-overlay" />
+      </motion.div>
+
+      {/* Floating Shapes */}
+      <div className="absolute inset-0 overflow-hidden">
+        {[...Array(3)].map((_, i) => (
+          <motion.div
+            key={i}
+            variants={floatingAnimation}
+            initial="initial"
+            animate="animate"
+            className="absolute rounded-full bg-brand-orange/5 backdrop-blur-3xl"
+            style={{
+              width: Math.random() * 400 + 200,
+              height: Math.random() * 400 + 200,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 2}s`
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="container mx-auto px-4 relative">
         <div className="text-center mb-16">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, ease: [0.215, 0.610, 0.355, 1.000] }}
+            className="relative"
+          >
+            <div className="absolute -inset-1 rounded-lg bg-gradient-to-r from-brand-orange-light via-white to-brand-orange-light opacity-20 blur-lg" />
+            <div className="relative">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -87,6 +149,8 @@ export default function Services() {
           >
             Comprehensive IT solutions to drive your business forward
           </motion.p>
+            </div>
+          </motion.div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -96,8 +160,10 @@ export default function Services() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 group"
+              className="group relative"
             >
+              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-brand-orange-dark to-brand-orange-light opacity-20 blur-lg group-hover:opacity-30 transition duration-300" />
+              <div className="relative bg-white/80 dark:bg-gray-800/90 backdrop-blur-xl rounded-xl overflow-hidden shadow-lg">
               <div className="p-8 border-t-2 border-transparent group-hover:border-brand-orange transition-colors duration-300">
                 <div className="text-brand-orange mb-4 transform transition-transform duration-300 group-hover:scale-110">
                   {service.icon}
@@ -110,17 +176,21 @@ export default function Services() {
                 </p>
                 <ul className="space-y-2">
                   {service.features.map((feature, featureIndex) => (
-                    <li 
+                      <motion.li 
                       key={featureIndex}
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: (index * 0.1) + (featureIndex * 0.1) }}
                       className="flex items-center text-gray-600 dark:text-gray-300 transition-colors duration-300 group-hover:text-gray-700 dark:group-hover:text-gray-200"
                     >
                       <span className="w-1.5 h-1.5 bg-brand-orange rounded-full mr-2 transition-transform duration-300 group-hover:scale-125"></span>
                       <span className="transition-colors duration-300 hover:text-brand-orange">
                         {feature}
                       </span>
-                    </li>
+                      </motion.li>
                   ))}
                 </ul>
+                </div>
               </div>
             </motion.div>
           ))}

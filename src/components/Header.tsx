@@ -27,17 +27,17 @@ export default function Header() {
 
   return (
     <header className="fixed w-full top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800">
-      <nav className="container mx-auto px-4 py-4">
+      <nav className="container mx-auto px-4 py-2">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <div className="relative w-24 h-24 flex items-center justify-center">
+            <div className="relative w-28 h-16 flex items-center justify-center">
               <Image
                 src="/images/RAM.png"
                 alt="ITRAM Logo"
-                width={96}
-                height={96}
-                className={`w-auto h-auto object-contain ${theme === 'dark' ? 'brightness-100' : 'brightness-90'}`}
+                width={112}
+                height={112}
+                className={`w-auto h-auto object-contain transform scale-125 ${theme === 'dark' ? 'brightness-100' : 'brightness-90'}`}
                 priority
                 onError={() => setLogoError(true)}
               />
@@ -45,12 +45,12 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center gap-4">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-gray-600 dark:text-gray-300 hover:text-brand-orange dark:hover:text-brand-orange transition-colors font-medium"
+                className="px-3 py-2 text-gray-600 dark:text-gray-300 hover:text-brand-orange dark:hover:text-brand-orange transition-colors font-medium text-sm"
               >
                 {item.name}
               </Link>
@@ -59,7 +59,7 @@ export default function Header() {
             {/* Theme Toggle */}
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-brand-orange dark:hover:text-brand-orange transition-colors"
+              className="ml-2 p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-brand-orange dark:hover:text-brand-orange transition-colors"
               aria-label="Toggle theme"
             >
               {theme === 'dark' ? <FaSun className="w-5 h-5" /> : <FaMoon className="w-5 h-5" />}
@@ -87,13 +87,13 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden mt-4 py-4 border-t border-gray-100 dark:border-gray-800">
-            <div className="flex flex-col space-y-4">
+          <div className="md:hidden mt-2 py-3 border-t border-gray-100 dark:border-gray-800">
+            <div className="flex flex-col space-y-2">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="text-gray-600 dark:text-gray-300 hover:text-brand-orange dark:hover:text-brand-orange transition-colors font-medium"
+                  className="px-3 py-2 text-gray-600 dark:text-gray-300 hover:text-brand-orange dark:hover:text-brand-orange transition-colors font-medium"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}

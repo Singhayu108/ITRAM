@@ -1,8 +1,60 @@
 'use client'
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock, FaChevronDown } from 'react-icons/fa'
+import { useState, useEffect } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock, FaChevronDown, FaComments, FaHeadset } from 'react-icons/fa'
+
+const textVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.1,
+      duration: 0.8,
+      ease: [0.215, 0.610, 0.355, 1.000]
+    }
+  })
+}
+
+const backgroundVariants = {
+  animate: {
+    backgroundPosition: ['0% 0%', '100% 100%'],
+    transition: {
+      duration: 20,
+      ease: "linear",
+      repeat: Infinity,
+      repeatType: "reverse" as const
+    }
+  }
+}
+
+const floatingAnimation = {
+  initial: { y: 0 },
+  animate: {
+    y: [-10, 10],
+    transition: {
+      duration: 3,
+      ease: "easeInOut",
+      repeat: Infinity,
+      repeatType: "reverse" as const
+    }
+  }
+}
+
+const scrollingTextVariants = {
+  animate: {
+    x: [0, -1000],
+    transition: {
+      x: {
+        repeat: Infinity,
+        repeatType: "loop" as const,
+        duration: 30,
+        ease: "linear",
+      },
+    },
+  },
+}
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -17,6 +69,8 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null)
+
+  const headingText = "Let's Start a Conversation".split(" ")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -63,22 +117,25 @@ export default function ContactPage() {
 
   const contactInfo = [
     {
-      icon: <FaPhone className="w-6 h-6" />,
-      title: "Phone",
+      icon: <FaHeadset className="w-6 h-6" />,
+      title: "24/7 Support",
       details: "+1 (555) 123-4567",
-      link: "tel:+15551234567"
+      link: "tel:+15551234567",
+      description: "Available round the clock for urgent assistance"
     },
     {
       icon: <FaEnvelope className="w-6 h-6" />,
-      title: "Email",
+      title: "Email Us",
       details: "singhayu108@gmail.com",
-      link: "mailto:singhayu108@gmail.com"
+      link: "mailto:singhayu108@gmail.com",
+      description: "Get in touch via email for detailed inquiries"
     },
     {
       icon: <FaMapMarkerAlt className="w-6 h-6" />,
-      title: "Address",
+      title: "Visit Us",
       details: "123 Business Street, Tech City, TC 12345",
-      link: "https://maps.google.com"
+      link: "https://maps.google.com",
+      description: "Come meet us at our office location"
     }
   ]
 
@@ -108,34 +165,103 @@ export default function ContactPage() {
   ]
 
   return (
-    <main className="pt-24">
+    <main className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6"
+      <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
+        {/* Animated Background */}
+        <motion.div
+          variants={backgroundVariants}
+          animate="animate"
+          className="absolute inset-0 bg-gradient-to-br from-brand-orange-dark via-brand-orange to-brand-orange-light bg-[length:400%_400%]"
+        >
+          <div className="absolute inset-0 bg-[url('/images/noise.png')] opacity-[0.03] mix-blend-overlay" />
+        </motion.div>
+
+        {/* Floating Shapes */}
+        <div className="absolute inset-0 overflow-hidden">
+          {[...Array(5)].map((_, i) => (
+            <motion.div
+              key={i}
+              variants={floatingAnimation}
+              initial="initial"
+              animate="animate"
+              className="absolute rounded-full bg-white/5 backdrop-blur-3xl"
+              style={{
+                width: Math.random() * 200 + 100,
+                height: Math.random() * 200 + 100,
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 2}s`
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Scrolling Background Text */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
+          <div className="absolute -top-1/2 whitespace-nowrap opacity-[0.03]">
+            <motion.div
+              variants={scrollingTextVariants}
+              animate="animate"
+              className="inline-block text-[250px] font-black tracking-tight text-white"
             >
-              Let's Start a Conversation
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-xl text-gray-600 dark:text-gray-300"
-            >
-              Whether you have a question, want to start a project or simply want to connect.
-            </motion.p>
+              CONTACT ITRAM CONTACT ITRAM
+            </motion.div>
           </div>
+          <div className="absolute top-1/2 whitespace-nowrap opacity-[0.03]">
+            <motion.div
+              variants={scrollingTextVariants}
+              animate="animate"
+              style={{ animationDelay: '1s' }}
+              className="inline-block text-[250px] font-black tracking-tight text-white"
+            >
+              CONTACT ITRAM CONTACT ITRAM
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="container mx-auto px-4 text-center text-white relative z-10">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, ease: [0.215, 0.610, 0.355, 1.000] }}
+            className="relative"
+          >
+            <div className="absolute -inset-1 rounded-lg bg-gradient-to-r from-brand-orange-light via-white to-brand-orange-light opacity-20 blur-lg" />
+            <div className="relative">
+              <div className="flex flex-wrap justify-center">
+                {headingText.map((word, i) => (
+                  <motion.span
+                    key={i}
+                    custom={i}
+                    variants={textVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="text-4xl md:text-6xl font-bold mx-2 text-transparent bg-clip-text bg-gradient-to-r from-white to-white/80"
+                  >
+                    {word}
+                  </motion.span>
+                ))}
+              </div>
+              <motion.p
+                variants={textVariants}
+                initial="hidden"
+                animate="visible"
+                custom={headingText.length + 1}
+                className="text-xl md:text-2xl text-white/90 mt-6 mb-8 max-w-2xl mx-auto font-light"
+              >
+                We're here to help and answer any questions you might have.
+              </motion.p>
+            </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Contact Information */}
-      <section className="py-20">
+      {/* Main Content */}
+      <section className="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
         <div className="container mx-auto px-4">
+          {/* Contact Cards Grid */}
           <div className="grid md:grid-cols-3 gap-8 mb-20">
             {contactInfo.map((info, index) => (
               <motion.a
@@ -146,57 +272,53 @@ export default function ContactPage() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-center group hover:-translate-y-2"
+                whileHover={{ y: -8, transition: { duration: 0.2 } }}
+                className="group relative"
               >
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-brand-orange bg-opacity-10 text-brand-orange mb-4 transform group-hover:scale-110 transition-transform duration-300">
+                <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-brand-orange-dark to-brand-orange-light opacity-20 blur group-hover:opacity-30 transition duration-300" />
+                <div className="relative bg-white dark:bg-gray-800/90 backdrop-blur-xl p-8 rounded-xl shadow-lg transition-all duration-300">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-r from-brand-orange to-brand-orange-light text-white mb-6 transform group-hover:scale-110 transition-transform duration-300 shadow-lg">
                   {info.icon}
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
                   {info.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300">
+                  <p className="text-gray-600 dark:text-gray-300 mb-4">
+                    {info.description}
+                  </p>
+                  <p className="text-brand-orange font-medium">
                   {info.details}
                 </p>
+                </div>
               </motion.a>
             ))}
           </div>
 
-          {/* Office Hours */}
-          <div className="max-w-2xl mx-auto mb-20">
+          {/* Two Column Layout */}
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
+            {/* Left Column - Form */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
-              className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg"
+              className="relative"
             >
-              <div className="flex items-center gap-4 mb-6">
-                <FaClock className="w-6 h-6 text-brand-orange" />
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Office Hours</h3>
-              </div>
-              <div className="space-y-4">
-                {officeHours.map((schedule, index) => (
-                  <div key={index} className="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-2">
-                    <span className="text-gray-700 dark:text-gray-300">{schedule.day}</span>
-                    <span className="text-gray-900 dark:text-white font-medium">{schedule.hours}</span>
+              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-brand-orange-dark to-brand-orange-light opacity-10 blur-lg dark:opacity-20" />
+              <div className="relative bg-white/80 dark:bg-gray-800/90 backdrop-blur-xl p-8 rounded-xl shadow-lg">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="p-3 rounded-lg bg-gradient-to-r from-brand-orange to-brand-orange-light">
+                    <FaComments className="w-8 h-8 text-white" />
                   </div>
-                ))}
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Send us a Message</h3>
               </div>
-            </motion.div>
-          </div>
-
-          {/* Contact Form */}
-          <div className="max-w-2xl mx-auto mb-20">
-            <motion.form
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              onSubmit={handleSubmit}
-              className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg"
-            >
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Send us a Message</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="name" className="block text-gray-700 dark:text-gray-300 mb-2">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.2 }}
+                    >
+                      <label htmlFor="name" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
                     Name *
                   </label>
                   <input
@@ -206,11 +328,15 @@ export default function ContactPage() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-orange"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="email" className="block text-gray-700 dark:text-gray-300 mb-2">
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all duration-200"
+                      />
+                    </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      <label htmlFor="email" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
                     Email *
                   </label>
                   <input
@@ -220,11 +346,15 @@ export default function ContactPage() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-orange"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="phone" className="block text-gray-700 dark:text-gray-300 mb-2">
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all duration-200"
+                      />
+                    </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.4 }}
+                    >
+                      <label htmlFor="phone" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
                     Phone
                   </label>
                   <input
@@ -233,11 +363,15 @@ export default function ContactPage() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-orange"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="company" className="block text-gray-700 dark:text-gray-300 mb-2">
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all duration-200"
+                      />
+                    </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.5 }}
+                    >
+                      <label htmlFor="company" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
                     Company
                   </label>
                   <input
@@ -246,12 +380,17 @@ export default function ContactPage() {
                     name="company"
                     value={formData.company}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-orange"
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all duration-200"
                   />
+                    </motion.div>
                 </div>
-              </div>
-              <div className="mt-6">
-                <label htmlFor="preferredContact" className="block text-gray-700 dark:text-gray-300 mb-2">
+
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.6 }}
+                  >
+                    <label htmlFor="preferredContact" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
                   Preferred Contact Method
                 </label>
                 <select
@@ -259,14 +398,19 @@ export default function ContactPage() {
                   name="preferredContact"
                   value={formData.preferredContact}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-orange"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all duration-200"
                 >
                   <option value="email">Email</option>
                   <option value="phone">Phone</option>
                 </select>
-              </div>
-              <div className="mt-6">
-                <label htmlFor="subject" className="block text-gray-700 dark:text-gray-300 mb-2">
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.7 }}
+                  >
+                    <label htmlFor="subject" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
                   Subject *
                 </label>
                 <input
@@ -276,11 +420,16 @@ export default function ContactPage() {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-orange"
-                />
-              </div>
-              <div className="mt-6">
-                <label htmlFor="message" className="block text-gray-700 dark:text-gray-300 mb-2">
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all duration-200"
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.8 }}
+                  >
+                    <label htmlFor="message" className="block text-gray-700 dark:text-gray-300 mb-2 font-medium">
                   Message *
                 </label>
                 <textarea
@@ -290,77 +439,157 @@ export default function ContactPage() {
                   onChange={handleChange}
                   required
                   rows={6}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-orange"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-transparent transition-all duration-200 resize-none"
                 />
-              </div>
+                  </motion.div>
 
               {/* Status Messages */}
               {submitStatus === 'success' && (
-                <div className="mt-6 p-4 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-lg">
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="p-4 bg-green-50 dark:bg-green-900/30 backdrop-blur-xl border border-green-200 dark:border-green-700 text-green-700 dark:text-green-300 rounded-lg flex items-center"
+                    >
+                      <svg className="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
                   Thank you for your message! We'll get back to you soon.
-                </div>
+                    </motion.div>
               )}
               {submitStatus === 'error' && (
-                <div className="mt-6 p-4 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg">
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="p-4 bg-red-50 dark:bg-red-900/30 backdrop-blur-xl border border-red-200 dark:border-red-700 text-red-700 dark:text-red-300 rounded-lg flex items-center"
+                    >
+                      <svg className="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
                   There was an error sending your message. Please try again later.
-                </div>
+                    </motion.div>
               )}
 
-              <button
+                  <motion.button
                 type="submit"
                 disabled={isSubmitting}
-                className={`mt-6 w-full bg-brand-orange text-white px-8 py-3 rounded-lg font-medium transition-all duration-300 transform hover:-translate-y-1 ${
-                  isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-opacity-90'
-                }`}
-              >
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.9 }}
+                    className={`relative w-full group ${
+                      isSubmitting ? 'cursor-not-allowed opacity-70' : ''
+                    }`}
+                  >
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-brand-orange to-brand-orange-light rounded-lg blur opacity-60 group-hover:opacity-100 transition duration-200" />
+                    <div className={`relative w-full px-8 py-4 bg-white dark:bg-gray-800 rounded-lg font-medium transform transition-all duration-200 ${
+                      !isSubmitting && 'group-hover:-translate-y-1'
+                    }`}>
+                      <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-brand-orange to-brand-orange-light opacity-0 group-hover:opacity-100 transition duration-200" />
+                      <span className="relative text-brand-orange group-hover:text-white transition-colors duration-200">
                 {isSubmitting ? 'Sending...' : 'Send Message'}
-              </button>
-            </motion.form>
+                      </span>
+                    </div>
+                  </motion.button>
+                </form>
           </div>
+            </motion.div>
 
-          {/* FAQ Section */}
-          <div className="max-w-2xl mx-auto">
+            {/* Right Column - Office Hours & FAQ */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
-              className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg"
+              className="space-y-8"
             >
+              {/* Office Hours */}
+              <div className="relative">
+                <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-brand-orange-dark to-brand-orange-light opacity-10 blur-lg dark:opacity-20" />
+                <div className="relative bg-white/80 dark:bg-gray-800/90 backdrop-blur-xl p-8 rounded-xl shadow-lg">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="p-3 rounded-lg bg-gradient-to-r from-brand-orange to-brand-orange-light">
+                      <FaClock className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Office Hours</h3>
+                  </div>
+                  <div className="space-y-4">
+                    {officeHours.map((schedule, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-4 last:border-0"
+                      >
+                        <span className="text-gray-700 dark:text-gray-300 font-medium">{schedule.day}</span>
+                        <span className="text-brand-orange font-semibold">{schedule.hours}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* FAQ Section */}
+              <div className="relative">
+                <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-brand-orange-dark to-brand-orange-light opacity-10 blur-lg dark:opacity-20" />
+                <div className="relative bg-white/80 dark:bg-gray-800/90 backdrop-blur-xl p-8 rounded-xl shadow-lg">
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Frequently Asked Questions</h3>
               <div className="space-y-4">
                 {faqs.map((faq, index) => (
-                  <div key={index} className="border-b border-gray-200 dark:border-gray-700 pb-4">
+                      <motion.div
+                        key={index}
+                        initial={false}
+                        animate={{ 
+                          backgroundColor: expandedFaq === index 
+                            ? 'rgba(255, 125, 0, 0.05)' 
+                            : 'transparent',
+                          scale: expandedFaq === index ? 1.02 : 1
+                        }}
+                        transition={{ duration: 0.2 }}
+                        className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden"
+                      >
                     <button
                       onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
-                      className="w-full flex justify-between items-center text-left"
-                    >
-                      <span className="text-gray-900 dark:text-white font-medium">{faq.question}</span>
-                      <FaChevronDown
-                        className={`w-4 h-4 text-gray-500 transform transition-transform duration-300 ${
-                          expandedFaq === index ? 'rotate-180' : ''
-                        }`}
-                      />
+                          className="w-full flex justify-between items-center text-left p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200"
+                        >
+                          <span className="text-gray-900 dark:text-white font-medium pr-8">{faq.question}</span>
+                          <motion.div
+                            animate={{ rotate: expandedFaq === index ? 180 : 0 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <FaChevronDown className="w-4 h-4 text-brand-orange" />
+                          </motion.div>
                     </button>
-                    {expandedFaq === index && (
-                      <motion.p
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="mt-4 text-gray-600 dark:text-gray-300"
-                      >
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ 
+                            height: expandedFaq === index ? 'auto' : 0,
+                            opacity: expandedFaq === index ? 1 : 0
+                          }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="p-4 pt-0 text-gray-600 dark:text-gray-300">
                         {faq.answer}
-                      </motion.p>
-                    )}
+                          </div>
+                        </motion.div>
+                      </motion.div>
+                    ))}
                   </div>
-                ))}
+                </div>
               </div>
             </motion.div>
           </div>
 
           {/* Map Section */}
-          <div className="max-w-5xl mx-auto mt-20">
-            <div className="aspect-w-16 aspect-h-9 rounded-xl overflow-hidden shadow-lg">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mt-20 relative"
+          >
+            <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-brand-orange-dark to-brand-orange-light opacity-10 blur-lg dark:opacity-20" />
+            <div className="relative bg-white/80 dark:bg-gray-800/90 backdrop-blur-xl p-8 rounded-xl shadow-lg">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Our Location</h3>
+              <div className="aspect-w-16 aspect-h-9 rounded-xl overflow-hidden">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.0167601300953!2d77.5907873!3d12.971598799999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae167b0bf30b6f%3A0x9b55fd8293fc2bdf!2sBrigade%20Rd%2C%20Bengaluru%2C%20Karnataka%20560001%2C%20India!5e0!3m2!1sen!2sin!4v1709754563014!5m2!1sen!2sin"
                 width="100%"
@@ -369,10 +598,11 @@ export default function ContactPage() {
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                className="w-full h-full"
+                  className="w-full h-full rounded-lg"
               ></iframe>
             </div>
           </div>
+          </motion.div>
         </div>
       </section>
     </main>

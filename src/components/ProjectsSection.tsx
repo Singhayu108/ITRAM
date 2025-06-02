@@ -44,6 +44,31 @@ const featuredProjects: Project[] = [
   }
 ]
 
+const backgroundVariants = {
+  animate: {
+    backgroundPosition: ['0% 0%', '100% 100%'],
+    transition: {
+      duration: 20,
+      ease: "linear",
+      repeat: Infinity,
+      repeatType: "reverse" as const
+    }
+  }
+}
+
+const floatingAnimation = {
+  initial: { y: 0 },
+  animate: {
+    y: [-10, 10],
+    transition: {
+      duration: 3,
+      ease: "easeInOut",
+      repeat: Infinity,
+      repeatType: "reverse" as const
+    }
+  }
+}
+
 export default function ProjectsSection() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -59,25 +84,64 @@ export default function ProjectsSection() {
   }
 
   return (
-    <section className="py-20 bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4">
+    <section className="relative py-20 overflow-hidden">
+      {/* Animated Background */}
+      <motion.div
+        variants={backgroundVariants}
+        animate="animate"
+        className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 bg-[length:400%_400%]"
+      >
+        <div className="absolute inset-0 bg-[url('/images/noise.png')] opacity-[0.03] mix-blend-overlay" />
+      </motion.div>
+
+      {/* Floating Shapes */}
+      <div className="absolute inset-0 overflow-hidden">
+        {[...Array(3)].map((_, i) => (
+          <motion.div
+            key={i}
+            variants={floatingAnimation}
+            initial="initial"
+            animate="animate"
+            className="absolute rounded-full bg-brand-orange/5 backdrop-blur-3xl"
+            style={{
+              width: Math.random() * 400 + 200,
+              height: Math.random() * 400 + 200,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 2}s`
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="container mx-auto px-4 relative">
         <div className="text-center mb-16">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-4xl font-bold text-gray-900 dark:text-white mb-4"
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, ease: [0.215, 0.610, 0.355, 1.000] }}
+            className="relative"
           >
-            Featured Projects
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-xl text-gray-600 dark:text-gray-300 mb-8"
-          >
-            Discover how we deliver innovative solutions for our clients
-          </motion.p>
+            <div className="absolute -inset-1 rounded-lg bg-gradient-to-r from-brand-orange-light via-white to-brand-orange-light opacity-20 blur-lg" />
+            <div className="relative">
+              <motion.h2 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="text-4xl font-bold text-gray-900 dark:text-white mb-4"
+              >
+                Featured Projects
+              </motion.h2>
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="text-xl text-gray-600 dark:text-gray-300 mb-8"
+              >
+                Discover how we deliver innovative solutions for our clients
+              </motion.p>
+            </div>
+          </motion.div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
@@ -87,52 +151,87 @@ export default function ProjectsSection() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 group cursor-pointer"
               onClick={() => handleProjectClick(project)}
+              className="group relative cursor-pointer"
             >
-              <div className="relative h-48 w-full overflow-hidden">
-                <Image
-                  src={project.image}
-                  alt={project.title}
-                  fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-                <div className="absolute inset-0 bg-brand-orange opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
-                <div className="absolute top-4 right-4 text-brand-orange bg-white dark:bg-gray-800 p-2 rounded-full shadow-lg">
-                  {project.icon}
+              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-brand-orange-dark to-brand-orange-light opacity-20 blur-lg group-hover:opacity-30 transition duration-300" />
+              <div className="relative bg-white/80 dark:bg-gray-800/90 backdrop-blur-xl rounded-xl overflow-hidden shadow-lg">
+                <div className="relative h-48 w-full overflow-hidden">
+                  <Image
+                    src={project.image}
+                    alt={project.title}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <motion.div 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="absolute top-4 right-4 text-brand-orange bg-white dark:bg-gray-800 p-3 rounded-full shadow-lg transform group-hover:scale-110 transition-transform duration-300"
+                  >
+                    {project.icon}
+                  </motion.div>
                 </div>
-              </div>
-              <div className="p-6 border-t-2 border-transparent group-hover:border-brand-orange transition-colors duration-300">
-                <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-3 group-hover:text-brand-orange transition-colors duration-300">
-                  {project.title}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  {project.description}
-                </p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.technologies.map((tech, techIndex) => (
-                    <span
-                      key={techIndex}
-                      className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm px-3 py-1 rounded-full transition-colors duration-300 hover:bg-brand-orange hover:text-white"
-                    >
-                      {tech}
-                    </span>
-                  ))}
+                <div className="p-6 border-t-2 border-transparent group-hover:border-brand-orange transition-colors duration-300">
+                  <motion.h3
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.2 }}
+                    className="text-2xl font-semibold text-gray-900 dark:text-white mb-3 group-hover:text-brand-orange transition-colors duration-300"
+                  >
+                    {project.title}
+                  </motion.h3>
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.3 }}
+                    className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-2"
+                  >
+                    {project.description}
+                  </motion.p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {project.technologies.map((tech, techIndex) => (
+                      <motion.span
+                        key={techIndex}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5, delay: (index * 0.1) + (techIndex * 0.1) }}
+                        className="bg-brand-orange/10 text-brand-orange text-sm px-3 py-1 rounded-full"
+                      >
+                        {tech}
+                      </motion.span>
+                    ))}
+                  </div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.4 }}
+                    className="flex items-center justify-between text-brand-orange font-medium"
+                  >
+                    <span>View Details</span>
+                    <FaExternalLinkAlt className="transform group-hover:translate-x-2 transition-transform duration-300" />
+                  </motion.div>
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
 
-        <div className="text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="text-center"
+        >
           <Link
             href="/projects"
             className="inline-block bg-brand-orange text-white px-8 py-3 rounded-full font-medium hover:bg-opacity-90 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg"
           >
             View All Projects
           </Link>
-        </div>
+        </motion.div>
       </div>
 
       <ProjectModal

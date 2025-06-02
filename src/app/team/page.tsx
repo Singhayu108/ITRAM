@@ -3,6 +3,34 @@
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { FaLinkedin, FaTwitter, FaGithub } from 'react-icons/fa'
+import AnimatedBackground from '@/components/AnimatedBackground'
+
+const textVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.1,
+      duration: 0.8,
+      ease: 'easeOut'
+    }
+  })
+}
+
+const scrollingTextVariants = {
+  animate: {
+    x: [0, -100],
+    transition: {
+      x: {
+        repeat: Infinity,
+        repeatType: "loop",
+        duration: 20,
+        ease: "linear",
+      },
+    },
+  },
+}
 
 const teamMembers = [
   {
@@ -74,88 +102,101 @@ const teamMembers = [
 ]
 
 export default function TeamPage() {
+  const headingText = "Meet Our Team".split(" ")
+
   return (
-    <main className="pt-24">
-      {/* Hero Section */}
-      <section className="bg-gray-50 dark:bg-gray-900 py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6"
-            >
-              Meet Our Team
-            </motion.h1>
+    <main className="min-h-screen">
+      <AnimatedBackground title="Meet Our Team">
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-xl text-gray-600 dark:text-gray-300"
+          transition={{ delay: 0.7 }}
+          className="text-xl md:text-2xl text-white/90 mt-6 mb-8 max-w-2xl mx-auto font-light"
             >
               Dedicated professionals committed to delivering excellence in IT solutions
             </motion.p>
-          </div>
-        </div>
-      </section>
+      </AnimatedBackground>
 
       {/* Team Grid */}
-      <section className="py-20">
+      <section className="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {teamMembers.map((member, index) => (
               <motion.div
                 key={member.name}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group"
+                transition={{ duration: 0.8, delay: index * 0.2 }}
+                whileHover={{ y: -10 }}
+                className="group relative"
               >
+                <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-brand-orange-dark to-brand-orange-light opacity-20 blur-lg group-hover:opacity-30 transition duration-300" />
+                <div className="relative bg-white/80 dark:bg-gray-800/90 backdrop-blur-xl rounded-xl overflow-hidden shadow-lg">
                 <div className="relative h-64 w-full overflow-hidden">
                   <Image
                     src={member.image}
                     alt={member.name}
                     fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-brand-orange opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-brand-orange/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
-                <div className="p-6">
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                  <div className="p-8">
+                    <motion.h3 
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      transition={{ duration: 0.5, delay: index * 0.3 }}
+                      className="text-2xl font-bold text-gray-900 dark:text-white mb-2"
+                    >
                     {member.name}
-                  </h3>
-                  <p className="text-brand-orange font-medium mb-4">
+                    </motion.h3>
+                    <motion.p 
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      transition={{ duration: 0.5, delay: index * 0.4 }}
+                      className="text-brand-orange font-medium mb-4"
+                    >
                     {member.role}
-                  </p>
-                  <p className="text-gray-600 dark:text-gray-300 mb-6">
+                    </motion.p>
+                    <motion.p 
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      transition={{ duration: 0.5, delay: index * 0.5 }}
+                      className="text-gray-600 dark:text-gray-300 mb-6"
+                    >
                     {member.bio}
-                  </p>
-                  <div className="flex space-x-4">
+                    </motion.p>
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      transition={{ duration: 0.5, delay: index * 0.6 }}
+                      className="flex space-x-4"
+                    >
                     <a
                       href={member.social.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-gray-400 hover:text-brand-orange transition-colors duration-300"
+                        className="text-gray-400 hover:text-brand-orange transition-colors duration-300 transform hover:scale-110"
                     >
-                      <FaLinkedin className="w-5 h-5" />
+                        <FaLinkedin className="w-6 h-6" />
                     </a>
                     <a
                       href={member.social.twitter}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-gray-400 hover:text-brand-orange transition-colors duration-300"
+                        className="text-gray-400 hover:text-brand-orange transition-colors duration-300 transform hover:scale-110"
                     >
-                      <FaTwitter className="w-5 h-5" />
+                        <FaTwitter className="w-6 h-6" />
                     </a>
                     <a
                       href={member.social.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-gray-400 hover:text-brand-orange transition-colors duration-300"
+                        className="text-gray-400 hover:text-brand-orange transition-colors duration-300 transform hover:scale-110"
                     >
-                      <FaGithub className="w-5 h-5" />
+                        <FaGithub className="w-6 h-6" />
                     </a>
+                    </motion.div>
                   </div>
                 </div>
               </motion.div>
@@ -165,22 +206,23 @@ export default function TeamPage() {
       </section>
 
       {/* Join Us Section */}
-      <section className="bg-gray-50 dark:bg-gray-900 py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
+      <section className="relative py-20 bg-gradient-to-br from-brand-orange-dark via-brand-orange to-brand-orange-light">
+        <div className="absolute inset-0 bg-[url('/images/noise.png')] opacity-[0.03] mix-blend-overlay" />
+        <div className="container mx-auto px-4 relative">
+          <div className="max-w-3xl mx-auto text-center text-white">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-3xl font-bold text-gray-900 dark:text-white mb-6"
+              transition={{ duration: 0.8 }}
+              className="text-3xl md:text-4xl font-bold mb-6"
             >
               Join Our Team
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-xl text-gray-600 dark:text-gray-300 mb-8"
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-xl text-white/90 mb-8"
             >
               We're always looking for talented individuals to join our growing team.
             </motion.p>
@@ -188,8 +230,11 @@ export default function TeamPage() {
               href="/contact"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="inline-block bg-brand-orange text-white px-8 py-3 rounded-full font-medium hover:bg-opacity-90 transition-all duration-300 transform hover:-translate-y-1"
+              className="inline-block bg-white text-brand-orange-dark px-8 py-3 rounded-full font-semibold 
+                hover:bg-brand-orange-light hover:text-white transform transition-all duration-300 
+                hover:shadow-lg hover:shadow-white/20"
             >
               View Open Positions
             </motion.a>
